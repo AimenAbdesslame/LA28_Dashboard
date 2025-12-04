@@ -45,8 +45,8 @@ if selected_countries:
 # --- KPI Metrics ---
 
 st.title("🏅 Paris 2024 Olympic Games Overview")
-st.markdown("### A high-level summary of the Paris 2024 Olympic Games.")
-st.markdown("---")
+st.caption("A high-level summary of the Paris 2024 Olympic Games.")
+st.divider()
 
 # Calculate Metrics
 total_athletes = len(filtered_athletes)
@@ -63,13 +63,13 @@ if not filtered_medals.empty:
 
 # Display KPIs
 col1, col2, col3, col4, col5 = st.columns(5)
-col1.metric("Total Athletes", total_athletes)
+col1.metric("Total Athletes", f"{total_athletes:,}")
 col2.metric("Total Countries", total_countries)
 col3.metric("Total Sports", total_sports)
 col4.metric("Total Medals", total_medals_awarded)
 col5.metric("Number of Events", number_of_events)
 
-st.markdown("---")
+st.divider()
 
 # --- Visualizations ---
 
@@ -89,13 +89,22 @@ with col_charts_1:
                 df_medal_dist, 
                 values='Count', 
                 names='Medal Type', 
-                hole=0.4,
+                hole=0.5,
                 color='Medal Type',
                 color_discrete_map={
                     'Gold Medal': '#FFD700',
                     'Silver Medal': '#C0C0C0',
                     'Bronze Medal': '#CD7F32'
                 }
+            )
+            # Professional Styling
+            fig_pie.update_traces(textposition='inside', textinfo='percent+label')
+            fig_pie.update_layout(
+                template="plotly_white",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                showlegend=False,
+                margin=dict(t=20, b=20, l=20, r=20)
             )
             st.plotly_chart(fig_pie, use_container_width=True)
         else:
@@ -124,11 +133,22 @@ with col_charts_2:
                 y='country',
                 orientation='h',
                 text='Selected Total',
-                labels={'Selected Total': 'Total Medals', 'country': 'Country'},
+                labels={'Selected Total': 'Total Medals', 'country': ''},
                 color='Selected Total',
                 color_continuous_scale='Viridis'
             )
-            fig_bar.update_layout(yaxis={'categoryorder': 'total ascending'})
+            # Professional Styling
+            fig_bar.update_layout(
+                template="plotly_white",
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                yaxis={'categoryorder': 'total ascending'},
+                xaxis=dict(showgrid=False, showticklabels=False),
+                margin=dict(t=20, b=20, l=0, r=0),
+                coloraxis_showscale=False
+            )
+            fig_bar.update_traces(textposition='outside')
+            
             st.plotly_chart(fig_bar, use_container_width=True)
         else:
             st.warning("No medals found for the current selection.")
